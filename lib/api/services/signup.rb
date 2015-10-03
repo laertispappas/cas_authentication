@@ -7,7 +7,8 @@ module Api::Services
       @password = password
 
     end
-
+    
+    # TODO: Generate more secure digest with salt or something
     def call
       @user = User.new email: @email
       @user.encrypted_password = Digest::SHA1.hexdigest @password
