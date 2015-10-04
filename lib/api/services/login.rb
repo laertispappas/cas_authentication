@@ -22,7 +22,9 @@ module Api::Services
       end
     end
 
+
     private
+
     def generate_login_ticket
       @ticket = LoginTicket.new name: 'LT-#{Digest::SHA1.hexdigest(Time.new.to_s)}'
       @ticket.save

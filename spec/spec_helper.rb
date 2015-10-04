@@ -14,6 +14,7 @@ ActiveRecord::Base.establish_connection(
 DatabaseCleaner.strategy = :truncation
 
 RSpec.configure do |config|
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
@@ -50,4 +51,21 @@ RSpec.configure do |config|
     tgt.save
     tgt
   end
+
+  def spawn_service_ticket service: nil, user: nil
+    st = ServiceTicket.new name: 'ST-random', user: user, service: service
+    st.save
+    st
+  end
+
+  def perform_login user: nil
+    ticket = spawn_login_ticket
+    post '/login', username: user.email, 
+                   password: 'password', 
+                   lt: ticket.name, 
+                   service: service
+
+    @service_ticket = CGI::parse(URI.parse(last_response.header["Location"]).query)["ticket"][0]
+  end
+
 end

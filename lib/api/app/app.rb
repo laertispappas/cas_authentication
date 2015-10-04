@@ -4,6 +4,42 @@ class App < Sinatra::Base
     haml :index
   end
 
+  get "/login" do
+    if ticket_granting_ticket?
+      service = Api::Services::Login.new ticket_granting_ticket_name: request.cookies["CASTGC"]
+      service.call
+      if params[:service]
+        redirect params[:service] + "?ticket=#{service.service_ticket.name}", 303
+      end
+    else
+      service = Api::Services::Login.new
+      service.call
+      @service = params[:service]
+      @lt = service.ticket.name
+      haml :login
+    end
+ end
+
+  post '/login' do
+    if all_inputs_present?
+      service = Api::Services::Login.new(
+        username: params[:username], 
+        password: params[:password], 
+        login_ticket_name: params[:lt]
+      )
+      service.call
+
+      if service.status == :ok
+        response.set_cookie "CASTGC", service.ticket_granting_ticket.name
+        if params[:service]
+          redirect params[:service] + "?ticket=#{service.service_ticket.name}", 303
+        end
+      end
+    else
+      status 422
+    end
+  end
+
   get "/users/new" do
     haml :signup
   end
@@ -15,5 +51,19 @@ class App < Sinatra::Base
     if service.status == :ok
       redirect "/"
     end
+  end
+
+  private
+  def all_inputs_present?
+    params[:username] && params[:password] && 
+      params[:lt] && params[:username] != '' && 
+      params[:password] != '' && params[:lt] != ''
+  end
+
+  def ticket_granting_ticket?
+    tgt_name = request.cookies["CASTGC"]
+
+    !tgt_name.nil? &&
+      TicketGrantingTicket.find_by_name(tgt_name)
   end
 end

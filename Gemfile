@@ -6,5 +6,6 @@ gem 'pry-byebug'
 gem 'sqlite3'
 gem 'sinatra'
 gem 'haml'
+gem 'rack-test', require: 'rack/test'
 # Specify your gem's dependencies in api.gemspec
 gemspec
