@@ -68,7 +68,10 @@ module Api::Services
 
     def generate_service_ticket
       @service_ticket = ServiceTicket.new(
-        name: "ST-" + Digest::SHA1.hexdigest(Time.new.to_s))
+        name: "ST-" + Digest::SHA1.hexdigest(Time.new.to_s),
+        service: @service,
+        user: @user)
+
       @service_ticket.save!
     end
   end

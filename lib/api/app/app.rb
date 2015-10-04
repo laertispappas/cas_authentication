@@ -25,7 +25,8 @@ class App < Sinatra::Base
       service = Api::Services::Login.new(
         username: params[:username], 
         password: params[:password], 
-        login_ticket_name: params[:lt]
+        login_ticket_name: params[:lt],
+        service: params[:service]
       )
       service.call
 
@@ -51,6 +52,26 @@ class App < Sinatra::Base
     if service.status == :ok
       redirect "/"
     end
+  end
+
+  get "/p3/serviceValidate" do
+    content_type :xml
+
+    service = Api::Services::Validate.new(
+      params[:service], 
+      params[:ticket]
+    )
+    service.call
+
+    if service.status == :ok
+      @user = service.user
+      @success = true
+    else
+      @error = "ERROR"
+      status 201
+    end
+
+    builder :serviceValidate
   end
 
   private

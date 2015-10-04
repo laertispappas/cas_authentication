@@ -74,7 +74,7 @@ describe App do
   describe "warn login (there is already a ticket granting cookie)" do
     it 'logs a user in base off the cookie' do
       user = spawn_user email: username, password: password
-      perform_login user: user
+      perform_login user: user, service: "https://app.example.com"
       get '/login', service: 'https://app.example.com'
       expect(last_response.status).to eq 303
     end

@@ -58,7 +58,7 @@ RSpec.configure do |config|
     st
   end
 
-  def perform_login user: nil
+  def perform_login user: nil, service: nil
     ticket = spawn_login_ticket
     post '/login', username: user.email, 
                    password: 'password', 
