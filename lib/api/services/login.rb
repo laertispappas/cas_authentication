@@ -5,12 +5,12 @@ module Api::Services
     attr_reader :service_ticket
     attr_reader :status
     
-    def initialize username: nil, password: nil, login_ticket_name: nil, service: nil, ticket_granting_ticket_name: nil
-      @username = username
-      @password = password
-      @login_ticket_name = login_ticket_name
-      @service = service
-      @ticket_granting_ticket_name = ticket_granting_ticket_name
+    def initialize opts = {}
+      @username = opts[:username]
+      @password = opts[:password]
+      @login_ticket_name = opts[:login_ticket_name]
+      @service = opts[:service]
+      @ticket_granting_ticket_name = opts[:ticket_granting_ticket_name]
     end
 
     def call

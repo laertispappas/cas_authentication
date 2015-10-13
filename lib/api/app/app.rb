@@ -1,4 +1,9 @@
 class App < Sinatra::Base
+  configure :test do
+    set :raise_errors, true
+    set :show_exceptions, false
+  end
+  
   get "/" do
     @users = User.all
     haml :index
