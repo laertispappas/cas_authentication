@@ -36,7 +36,7 @@ class App < Sinatra::Base
       service.call
 
       if service.status == :ok
-        response.set_cookie "CASTGC", service.ticket_granting_ticket.name
+        response.set_cookie "CASTGC", value: service.ticket_granting_ticket.name
         if params[:service]
           redirect params[:service] + "?ticket=#{service.service_ticket.name}", 303
         end
@@ -76,10 +76,11 @@ class App < Sinatra::Base
       status 201
     end
 
-    builder :serviceValidate
-  end
+   builder :serviceValidate
+ end
 
   private
+
   def all_inputs_present?
     params[:username] && params[:password] && 
       params[:lt] && params[:username] != '' && 
